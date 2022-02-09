@@ -42,7 +42,6 @@ class App:
         self.js.document.getElementById(style_name).style.border = '3px solid white'
         remove_list = [x for x in self.style_list if x != style_name]
         for style_to_remove in remove_list:
-            print(style_to_remove)
             self.js.document.getElementById(style_to_remove).style.border = ''
 
     def change_style(self,style_name):
@@ -109,4 +108,4 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0',threaded=True)
+    app.run(host='127.0.0.1',port=5000,threaded=True)
