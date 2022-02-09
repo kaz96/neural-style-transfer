@@ -25,7 +25,7 @@ def load_img(img):
     img = img[tf.newaxis, :]
     return img
 
-app = Flask(__name__,
+application=app = Flask(__name__,
             static_folder = "assets",
             template_folder= ""
             )
