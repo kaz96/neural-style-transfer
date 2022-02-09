@@ -27,6 +27,7 @@ def load_img(img):
 
 app = Flask(__name__,
             static_folder = "assets",
+            template_folder= ""
             )
 
 app.config['SECRET_KEY'] = 'supersecretkey'
