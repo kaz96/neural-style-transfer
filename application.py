@@ -57,7 +57,7 @@ class App:
 
 
 
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(2)
 video.set(3,640)
 video.set(4,480)
 
