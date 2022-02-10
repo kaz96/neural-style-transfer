@@ -67,21 +67,26 @@ def gen(video):
     style = tf.image.decode_image(style, channels=3)
     style = tf.constant(load_img(style))
 
-    while True:
-        success, image = video.read()
-        preprocess_img = load_img(image)  # 1 black
+    if video.isOpened():
+
+        while True:
+            success, image = video.read()
+            if success:
+                preprocess_img = load_img(image)  # 1 black
 
 
-        stylized_image = hub_model(preprocess_img, style)[0]
+                stylized_image = hub_model(preprocess_img, style)[0]
 
-        stylized_image = tf.image.convert_image_dtype(stylized_image, tf.uint8)
+                stylized_image = tf.image.convert_image_dtype(stylized_image, tf.uint8)
 
-        ret, jpeg = cv2.imencode('.jpg', cv2.cvtColor(stylized_image[0].numpy(), cv2.COLOR_BGR2RGB))
+                ret, jpeg = cv2.imencode('.jpg', cv2.cvtColor(stylized_image[0].numpy(), cv2.COLOR_BGR2RGB))
 
-        frame = jpeg.tobytes()
+                frame = jpeg.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+            else:
+                print("No access to frame")
 
 class upload_file_form(FlaskForm):
     file = FileField("File", validators=[InputRequired()] )
