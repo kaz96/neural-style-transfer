@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, Request
 import cv2
 import tensorflow_hub as hub
 import tensorflow as tf
@@ -8,7 +8,12 @@ from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
 from wtforms.validators import InputRequired
 import os
+
 hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def load_img(img):
@@ -29,14 +34,17 @@ application=app = Flask(__name__,
             static_folder = "assets",
             template_folder= ""
             )
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'assets/files'
 
+
+
 @jsf.use(app)
 class App:
     def __init__(self):
-        self.style_list = ["starry","cubism","fire"]
+        self.style_list = ["starry","cubism","fire","wave"]
 
     def change_image_border(self,style_name):
         self.js.document.getElementById(style_name).style.border = '3px solid white'
@@ -57,7 +65,7 @@ class App:
 
 
 
-video = cv2.VideoCapture(2)
+video = cv2.VideoCapture(0)
 video.set(3,640)
 video.set(4,480)
 
@@ -67,26 +75,24 @@ def gen(video):
     style = tf.image.decode_image(style, channels=3)
     style = tf.constant(load_img(style))
 
-    if video.isOpened():
 
-        while True:
-            success, image = video.read()
-            if success:
-                preprocess_img = load_img(image)  # 1 black
+    while True:
+        success, image = video.read()
+        preprocess_img = load_img(image)  # 1 black
 
 
-                stylized_image = hub_model(preprocess_img, style)[0]
+        stylized_image = hub_model(preprocess_img, style)[0]
 
-                stylized_image = tf.image.convert_image_dtype(stylized_image, tf.uint8)
+        stylized_image = tf.image.convert_image_dtype(stylized_image, tf.uint8)
 
-                ret, jpeg = cv2.imencode('.jpg', cv2.cvtColor(stylized_image[0].numpy(), cv2.COLOR_BGR2RGB))
+        ret, jpeg = cv2.imencode('.jpg', cv2.cvtColor(stylized_image[0].numpy(), cv2.COLOR_BGR2RGB))
 
-                frame = jpeg.tobytes()
+        frame = jpeg.tobytes()
 
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-            else:
-                print("No access to frame")
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+    else:
+        print("No access to frame")
 
 class upload_file_form(FlaskForm):
     file = FileField("File", validators=[InputRequired()] )

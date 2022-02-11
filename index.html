@@ -6,7 +6,8 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>Cover Template · Bootstrap v5.1</title>
+
+    <title>Neural Style Transfer</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/cover/">
 
@@ -42,7 +43,7 @@
 
   </head>
   <body class="d-flex h-100 text-center text-white bg-dark">
-    
+
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="mb-auto">
     <div>
@@ -67,11 +68,20 @@
 			<img src="assets/fire.jpg" class="rounded" alt="Fire" style="width:100%" onclick = "server.change_style('fire')" id = "fire">
 		</div>
         <div class="column">
-            <form method = "POST" enctype="multipart/form-data">
-                {{form.hidden_tag()}}
-                {{form.file()}}
-                {{form.submit()}}
+			<img src="assets/wave.jpg" class="rounded" alt="Wave" style="width:100%" onclick = "server.change_style('wave')" id = "wave">
+		</div>
+        <div class="column">
+
+	<form method = "POST" enctype="multipart/form-data">
+              <div class="form-group files">
+<!--                <label>Upload Your File </label>-->
+                <input type="file" class="form-control" multiple="" onchange="form.submit()">
+              </div>
+
             </form>
+
+
+
 		</div>
 	</div>
 
@@ -80,7 +90,7 @@
         Neural Style Transfer combines them to generate a new image, that has the same content as the base image,
         but with the style of the style image.</p>
     <p class="lead">
-      <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Learn more</a>
+      <a href="https://www.tensorflow.org/tutorials/generative/style_transfer" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Learn more</a>
     </p>
 
 
@@ -91,7 +101,7 @@
   </main>
 
   <footer class="mt-auto text-white-50">
-    <p> <a href="https://github.com/kaz96" class="text-white">Source Code</a></p>
+    <p> <a href="https://github.com/kaz96/neural-style-transfer" class="text-white">Source Code</a></p>
   </footer>
 </div>
 
